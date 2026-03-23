@@ -1,0 +1,27 @@
+{
+  "name": "berlin-educational-sovereignty",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bullseye",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "redhat.vscode-yaml",
+        "ms-azuretools.vscode-docker",
+        "mechatroner.rainbow-csv"
+      ]
+    }
+  },
+  "forwardPorts": [8080, 3000],
+  "portsAttributes": {
+    "8080": {
+      "label": "Airflow",
+      "visibility": "private"
+    },
+    "3000": {
+      "label": "Metabase",
+      "visibility": "private"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
+}

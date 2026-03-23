@@ -1,67 +1,59 @@
 # Environment Setup
-## Codespaces Configuration
 
 ## Purpose
 
-This document describes how to make the repository usable inside GitHub Codespaces for:
+This document defines a reproducible development environment for:
 
-- Python
+- Python (data processing)
+- DuckDB (warehouse)
+- dbt (transformations)
+- Airflow 3 (orchestration)
+- Metabase (visualization)
+
+The setup is designed for GitHub Codespaces and ensures portability and thesis reproducibility.
+
+---
+
+## Architecture Overview
+
+We use **two isolated Python environments**:
+
+### 1. Project Environment (`.venv`)
+Used for:
 - DuckDB
-- dbt
-- Airflow
-- Metabase access
-- SQL-based development
-
----
-
-## Recommended Setup Strategy
-
-Use both:
-
-1. a `.devcontainer/` configuration for the Codespaces environment
-2. a `requirements.txt` file for Python dependencies
-
-This makes the environment reproducible and easier to defend during the thesis review.
-
----
-
-## Why the `.devcontainer/` folder matters
-
-The Codespace is created from a development container.  
-That means the repository itself should define the environment, not only the local package list.
-
-The `.devcontainer/` folder should contain:
-
-- `devcontainer.json`
-- `post-create.sh`
-
-This is the project’s environment recipe.
-
----
-
-## Why `requirements.txt` still matters
-
-`requirements.txt` is the source of truth for Python libraries used in the project, including:
-
-- DuckDB Python client
 - pandas
-- dbt DuckDB adapter
-- dotenv support
-- SQL utilities
+- dbt
+- general Python code
 
-It does not replace the dev container. It complements it.
+### 2. Airflow Environment (`.airflow-venv`)
+Used exclusively for:
+- Apache Airflow 3
+
+This separation avoids dependency conflicts (Airflow has strict constraints).
 
 ---
 
-## First-time setup steps
+## Dev Container Configuration
 
-1. Open the repository in GitHub Codespaces.
-2. Wait for the dev container to build.
-3. Let the post-create script install the Python dependencies.
-4. Verify the environment with these commands:
+The `.devcontainer/` folder defines the Codespaces environment:
+
+- `devcontainer.json` → container definition
+- `post-create.sh` → automated setup
+
+The post-create script:
+- creates both virtual environments
+- installs dependencies
+- prepares Airflow directory structure
+- configures environment variables
+
+---
+
+## Environment Variables
+
+Airflow requires **project-scoped configuration**.
+
+This must always be set before running Airflow:
 
 ```bash
-python --version
-git --version
-dbt --version
-airflow version
+export AIRFLOW_HOME=$(pwd)/airflow
+export AIRFLOW__CORE__LOAD_EXAMPLES=False

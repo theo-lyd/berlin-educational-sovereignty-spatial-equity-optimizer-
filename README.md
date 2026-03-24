@@ -135,6 +135,28 @@ Core dashboard datasets:
 - Dashboard specification: docs/phase10_metabase_dashboard_blueprint.md
 - QA evidence: reports/phase11_validation_report.json
 
+## Phase Completion Checklist
+
+Use this lightweight checklist at the end of every phase before moving forward:
+
+1. Run the relevant validation for the phase.
+2. Verify git working tree is clean except intended phase changes.
+3. Commit with a phase-scoped message, for example: `phaseN: <summary>`.
+4. Push `master` to origin.
+5. Create/update a phase tag, for example: `phase-0N-complete`.
+6. Push tags to origin.
+
+Quick command template:
+
+```bash
+git status --short
+git add <phase_files>
+git commit -m "phaseN: <summary>"
+git push origin master
+git tag -a phase-0N-complete -m "Phase N complete"
+git push origin --tags
+```
+
 ## Current Status
 
 Phases 4 through 11 are implemented and validated. Phase 12 documentation and defense preparation package is included under docs/.

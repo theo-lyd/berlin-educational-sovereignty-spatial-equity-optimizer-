@@ -132,7 +132,10 @@ Core dashboard datasets:
 
 - Technical methodology: docs/methodology.md
 - Project framing: docs/project_brief.md
+- Thesis report: docs/thesis_report.md
 - Dashboard specification: docs/phase10_metabase_dashboard_blueprint.md
+- Final handoff package: docs/final_handoff.md
+- Dashboard screenshots: reports/dashboard_screenshots/
 - QA evidence: reports/phase11_validation_report.json
 
 ## Phase Completion Checklist
@@ -159,4 +162,4 @@ git push origin --tags
 
 ## Current Status
 
-Phases 4 through 11 are implemented and validated. Phase 12 documentation and defense preparation package is included under docs/.
+Phases 4 through 13 are implemented. The repository is frozen for final delivery and release publication.

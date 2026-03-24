@@ -50,3 +50,57 @@ models:
         tests:
           - not_null
           - unique
+
+  - name: kpi_executive_overview
+    description: Single-row executive KPI overview for stakeholder reporting.
+    columns:
+      - name: total_student_demand
+        tests:
+          - not_null
+      - name: total_planned_capacity
+        tests:
+          - not_null
+      - name: total_gap
+        tests:
+          - not_null
+
+  - name: kpi_district_comparison
+    description: District and school-type comparison table for demand vs supply dashboards.
+    columns:
+      - name: bezirk_clean
+        tests:
+          - not_null
+      - name: schulart_clean
+        tests:
+          - not_null
+
+  - name: kpi_delay_risk_dashboard
+    description: Delay and risk focused project dataset for operational monitoring.
+    columns:
+      - name: project_key
+        tests:
+          - not_null
+      - name: delayed_handover_flag
+        tests:
+          - not_null
+      - name: expensive_delayed_project_flag
+        tests:
+          - not_null
+
+  - name: kpi_zugigkeit_scatter
+    description: Scatter-ready dataset for student volume versus planned track count.
+    columns:
+      - name: bezirk_clean
+        tests:
+          - not_null
+      - name: schulart_clean
+        tests:
+          - not_null
+
+  - name: kpi_data_quality_dashboard
+    description: Data quality summary metrics for missing, invalid, k. A., and incomplete records.
+    columns:
+      - name: model_name
+        tests:
+          - not_null
+          - unique

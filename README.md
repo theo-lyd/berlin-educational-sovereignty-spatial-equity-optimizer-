@@ -113,10 +113,33 @@ Then trigger DAG berlin_education_pipeline in UI (or CLI) with mode simple or fu
 
 ## View the Dashboard in Metabase
 
-1. Start Metabase and connect to DuckDB file data/warehouse/berlin_education.duckdb.
-2. Sync metadata.
-3. Build questions from analytics_marts tables.
-4. Follow dashboard design in docs/phase10_metabase_dashboard_blueprint.md.
+Use the included helper scripts to run Metabase as a local JAR service.
+
+1. Setup Metabase runtime and DuckDB driver:
+
+```bash
+./scripts/setup_metabase.sh
+```
+
+2. Start Metabase server on port 3000:
+
+```bash
+./scripts/run_metabase.sh
+```
+
+3. Open the UI at http://localhost:3000/setup.
+
+4. Add a DuckDB database connection to:
+
+```text
+/workspaces/berlin-educational-sovereignty-spatial-equity-optimizer-/data/warehouse/berlin_education.duckdb
+```
+
+5. Sync metadata and build dashboard pages from marts.
+
+6. Follow dashboard design in docs/phase10_metabase_dashboard_blueprint.md.
+
+Note: this repository ships KPI marts and a dashboard blueprint, not a pre-exported Metabase dashboard JSON. Charts are created in Metabase by following the blueprint.
 
 Core dashboard datasets:
 - analytics_marts.kpi_executive_overview

@@ -36,3 +36,7 @@ airflow/airflow.cfg
 airflow/airflow.db
 airflow/simple_auth_manager_passwords.json.generated
 airflow/dags/__pycache__/
+
+# Metabase local runtime
+.metabase/
+.metabase-data/

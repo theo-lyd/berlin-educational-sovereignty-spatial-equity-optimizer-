@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: stg_school_construction_projects
+    description: School construction staging model with raw and standardized analytical fields.
+    columns:
+      - name: berlin_school_number
+        tests:
+          - not_null
+      - name: bezirk_raw
+      - name: bezirk_clean
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Charlottenburg-Wilmersdorf
+                  - Friedrichshain-Kreuzberg
+                  - Lichtenberg
+                  - Marzahn-Hellersdorf
+                  - Mitte
+                  - Neukölln
+                  - Pankow
+                  - Reinickendorf
+                  - Spandau
+                  - Steglitz-Zehlendorf
+                  - Tempelhof-Schöneberg
+                  - Treptow-Köpenick
+      - name: schulart_raw
+      - name: schulart_clean
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Grundschule
+                  - Gymnasium
+                  - Integrierte Sekundarschule
+                  - Gemeinschaftsschule
+                  - OSZ
+                  - Schule mit sonderpädagogischem Förderschwerpunkt
+                  - Freie Waldorfschule
+                quote: true
+      - name: school_name
+        tests:
+          - not_null
+      - name: planned_capacity
+      - name: planned_capacity_raw
+      - name: total_cost_eur
+      - name: total_cost_raw
+      - name: handover_year_start
+      - name: handover_year_end
+      - name: is_special_needs
+        tests:
+          - not_null
+      - name: is_temporary_site
+        tests:
+          - not_null

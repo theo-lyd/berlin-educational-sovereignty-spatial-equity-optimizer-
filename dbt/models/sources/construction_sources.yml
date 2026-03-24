@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw_construction
+    schema: raw
+    tables:
+      - name: raw__schulbaukarte_2025__tabelle1
+        description: Raw school construction workbook loaded into DuckDB.

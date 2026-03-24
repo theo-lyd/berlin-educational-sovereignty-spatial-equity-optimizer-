@@ -47,5 +47,47 @@ This project is designed for presentation to a Berlin education stakeholder and 
 ## Repository Structure
 See the `docs/` and `dbt/` folders for project documentation and transformation logic.
 
+## Raw Ingestion (DuckDB)
+The script in `src/ingest_raw_duckdb.py` does the following:
+- Reads both source Excel workbooks sheet by sheet
+- Loads each sheet into DuckDB raw tables without destructive cleaning
+- Preserves placeholders such as `k. A.` and German-formatted strings as-is
+- Writes a DuckDB ingestion log table (`raw.raw_ingestion_log`)
+- Exports a CSV ingestion log
+- Generates markdown and JSON validation reports
+- Checks loaded row counts against source workbook row counts
+
+Raw tables are created in the `raw` schema with names derived from workbook and sheet names:
+- `raw.raw__<workbook_slug>__<sheet_slug>`
+
+### Run
+1. Place both Excel files in `data/raw/`:
+	 - `od-eckdaten-allg-2024.xlsx`
+	 - `schulbaukarte-2025-.xlsx`
+2. Activate `.venv` (not `.airflow-venv`).
+3. From the project root, run:
+
+```bash
+python src/ingest_raw_duckdb.py \
+	--db-path data/warehouse/berlin_education.duckdb \
+	--output-dir reports
+```
+
+## Operational Runbooks
+
+### Phase 8 Repeat Run (Snapshots + Slippage)
+Run this sequence whenever planning data is refreshed (for example weekly/monthly):
+
+```bash
+source .venv/bin/activate
+cd dbt
+dbt build --select staging intermediate
+dbt snapshot --select snp_planning_history
+dbt build --select int_planning_slippage kpi_planning_slippage kpi_planning_slippage_summary
+dbt build --select path:models/marts
+```
+
+Note: keep snapshot history cumulative. Do not routinely drop snapshot tables during normal runs.
+
 ## Status
 Capstone thesis in active development.

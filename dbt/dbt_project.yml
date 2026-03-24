@@ -1,0 +1,30 @@
+name: berlin_educational_sovereignty
+version: '1.0.0'
+config-version: 2
+profile: berlin_educational_sovereignty
+
+model-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+macro-paths: ["macros"]
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  berlin_educational_sovereignty:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+    marts:
+      +materialized: table
+      +schema: marts
+
+snapshots:
+  berlin_educational_sovereignty:
+    +target_schema: snapshots

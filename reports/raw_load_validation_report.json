@@ -1,0 +1,24 @@
+[
+  {
+    "source_file": "od-eckdaten-allg-2024.xlsx",
+    "sheet_name": "Tabelle1",
+    "table_name": "raw.raw__od_eckdaten_allg_2024__tabelle1",
+    "expected_rows": 116,
+    "loaded_rows": 116,
+    "loaded_columns": 4,
+    "status": "success",
+    "error_message": null,
+    "ingested_at_utc": "2026-03-24T08:15:38.929166+00:00"
+  },
+  {
+    "source_file": "schulbaukarte-2025-.xlsx",
+    "sheet_name": "Tabelle1",
+    "table_name": "raw.raw__schulbaukarte_2025__tabelle1",
+    "expected_rows": 511,
+    "loaded_rows": 511,
+    "loaded_columns": 14,
+    "status": "success",
+    "error_message": null,
+    "ingested_at_utc": "2026-03-24T08:15:39.024079+00:00"
+  }
+]

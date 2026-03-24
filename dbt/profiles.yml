@@ -1,0 +1,11 @@
+berlin_educational_sovereignty:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../data/warehouse/berlin_education.duckdb
+      threads: 4
+      schema: analytics
+      extensions:
+        - httpfs
+        - parquet

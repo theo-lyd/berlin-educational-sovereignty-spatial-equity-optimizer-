@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: kpi_district_summary
+    description: District-level demand and supply summary for planning decisions.
+    columns:
+      - name: bezirk_clean
+        tests:
+          - not_null
+          - unique
+
+  - name: kpi_school_type_mismatch
+    description: School-type demand versus planned-capacity comparison.
+    columns:
+      - name: schulart_clean
+        tests:
+          - not_null
+          - unique
+
+  - name: kpi_delivery_timeline
+    description: Delivery timeline showing when planned capacity becomes available.
+    columns:
+      - name: delivery_year
+        tests:
+          - not_null
+          - unique
+
+  - name: kpi_inclusion_coverage
+    description: Special-needs demand and planned capacity coverage by district.
+    columns:
+      - name: bezirk_clean
+        tests:
+          - not_null
+          - unique
+
+  - name: kpi_project_risk_ranking
+    description: Ranked project risk scores using timing, cost, interim dependency, missing data, and demand pressure.
+    columns:
+      - name: project_key
+        tests:
+          - not_null
+      - name: project_risk_rank
+        tests:
+          - not_null
+
+  - name: kpi_data_trust_score
+    description: Completeness, missingness, and trust score by model plus overall.
+    columns:
+      - name: model_name
+        tests:
+          - not_null
+          - unique

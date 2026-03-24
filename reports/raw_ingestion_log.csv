@@ -1,0 +1,3 @@
+source_file,sheet_name,table_name,expected_rows,loaded_rows,loaded_columns,status,error_message,ingested_at_utc
+od-eckdaten-allg-2024.xlsx,Tabelle1,raw.raw__od_eckdaten_allg_2024__tabelle1,116,116,4,success,,2026-03-24T08:15:38.929166+00:00
+schulbaukarte-2025-.xlsx,Tabelle1,raw.raw__schulbaukarte_2025__tabelle1,511,511,14,success,,2026-03-24T08:15:39.024079+00:00

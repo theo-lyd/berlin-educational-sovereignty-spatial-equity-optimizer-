@@ -136,6 +136,51 @@ Automate the full data workflow for reproducibility.
 **Output:**  
 Automated, repeatable data pipeline.
 
+### Phase 3.1: Phase 8 Repeated Historical Runs (Snapshots)
+
+**Objective:**
+Run historical tracking repeatedly so planning changes are captured over time and slippage outputs stay current.
+
+**Run Frequency:**
+- on each new source refresh
+- or on a fixed cadence (for example weekly or monthly)
+
+**Command Order (from project root):**
+
+1. Activate the project environment:
+
+```bash
+source .venv/bin/activate
+```
+
+2. Refresh upstream models used by snapshot logic:
+
+```bash
+cd dbt
+dbt build --select staging intermediate
+```
+
+3. Capture a new historical state:
+
+```bash
+dbt snapshot --select snp_planning_history
+```
+
+4. Rebuild slippage outputs and KPI reporting tables:
+
+```bash
+dbt build --select int_planning_slippage kpi_planning_slippage kpi_planning_slippage_summary
+```
+
+5. Optional quality gate for all KPI outputs:
+
+```bash
+dbt build --select path:models/marts
+```
+
+**Operational Note:**
+Do not drop the snapshot table during normal recurring runs. The table must accumulate historical versions so planning changes can be compared across time.
+
 ---
 
 ### Phase 4: Visualization and Decision Support  
@@ -268,6 +313,63 @@ Validation is performed at multiple levels:
 - district-level aggregation is sufficient for analysis  
 - planned infrastructure reflects intended delivery  
 - school-type categories can be harmonized  
+
+### Explicit Scoring Assumptions (Implemented)
+
+The following thresholds and formulas are implemented directly in dbt models to make scoring auditable.
+
+Formula-to-model appendix reference: see [docs/formula_to_model_mapping.md](docs/formula_to_model_mapping.md) for a one-page mapping of each formula to model path and output field names.
+
+#### Project Risk Score (Phase 7)
+Component scores are summed and normalized to a 0-100 scale:
+
+project_risk_score = round((score_handover_delay + score_project_cost + score_interim_dependency + score_missing_data + score_demand_pressure) / 20 * 100, 2)
+
+Risk bucket thresholds:
+- high: total component score >= 14
+- medium: total component score >= 8 and < 14
+- low: total component score < 8
+
+Component thresholds:
+- handover delay score:
+	- null handover year -> 4
+	- handover year <= current year -> 0
+	- +1 year -> 1
+	- +2 years -> 2
+	- +3 years -> 3
+	- >= +4 years -> 4
+- project cost score:
+	- null cost -> 2
+	- < 5,000,000 EUR -> 1
+	- < 15,000,000 EUR -> 2
+	- < 30,000,000 EUR -> 3
+	- >= 30,000,000 EUR -> 4
+- interim dependency score:
+	- temporary site true -> 3
+	- otherwise -> 0
+- missing-data score:
+	- +1 each for null: district, school type, planned capacity, cost, handover year
+- demand-pressure score (district demand_pressure_ratio_total):
+	- null -> 1
+	- >= 2.0 -> 4
+	- >= 1.2 and < 2.0 -> 3
+	- >= 0.8 and < 1.2 -> 2
+	- < 0.8 -> 1
+
+#### Data Trust Score (Phase 7)
+For each model and overall aggregate:
+- completeness_pct = round((1 - missing_cell_count / assessed_cell_count) * 100, 2)
+- missingness_pct = round((missing_cell_count / assessed_cell_count) * 100, 2)
+- data_trust_score = round((1 - (missing_cell_count + unknown_marker_count) / assessed_cell_count) * 100, 2)
+
+Assessed-cell definitions:
+- student demand model: assessed_cell_count = row_count * 4
+	- monitored fields: district_clean, school_type_clean, students, traeger
+- construction model: assessed_cell_count = row_count * 5
+	- monitored fields: district_clean, school_type_clean, planned_capacity, total_cost_eur, handover_year_start
+
+Unknown-marker handling assumption:
+- placeholders matching k. a. patterns in raw district/school-type fields contribute to unknown_marker_count and reduce data_trust_score.
 
 ### Limitations
 - no real-time data updates  

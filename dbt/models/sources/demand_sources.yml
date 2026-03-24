@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw_demand
+    schema: raw
+    tables:
+      - name: raw__od_eckdaten_allg_2024__tabelle1
+        description: Raw student demand workbook loaded into DuckDB.

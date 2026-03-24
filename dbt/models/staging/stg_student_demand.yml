@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: stg_student_demand
+    description: Student demand staging model with raw and standardized analytical fields.
+    columns:
+      - name: traeger
+        tests:
+          - not_null
+      - name: traeger_raw
+      - name: bezirk_raw
+      - name: bezirk_clean
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Charlottenburg-Wilmersdorf
+                  - Friedrichshain-Kreuzberg
+                  - Lichtenberg
+                  - Marzahn-Hellersdorf
+                  - Mitte
+                  - Neukölln
+                  - Pankow
+                  - Reinickendorf
+                  - Spandau
+                  - Steglitz-Zehlendorf
+                  - Tempelhof-Schöneberg
+                  - Treptow-Köpenick
+      - name: schulart_raw
+      - name: schulart_clean
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Grundschule
+                  - Gymnasium
+                  - Integrierte Sekundarschule
+                  - Gemeinschaftsschule
+                  - OSZ
+                  - Schule mit sonderpädagogischem Förderschwerpunkt
+                  - Freie Waldorfschule
+                quote: true
+      - name: students
+        tests:
+          - not_null
+      - name: is_special_needs
+        tests:
+          - not_null
+      - name: is_temporary_site
+        tests:
+          - not_null

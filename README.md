@@ -1,93 +1,140 @@
-# Berlin Educational Sovereignty & Spatial Equity Optimizer
+# Berlin Educational Sovereignty and Spatial Equity Optimizer
 
-A public-sector analytics engineering capstone project that aligns student demand with school infrastructure planning across Berlin’s districts. The project integrates demand-side education data with supply-side school construction data to analyze capacity gaps, delayed delivery risk, spatial inequity, inclusion coverage, and financial exposure.
+This repository contains an end-to-end analytics engineering system for Berlin education planning. It integrates student demand and school construction planning into a reproducible pipeline that produces district-level KPIs and stakeholder dashboards.
 
-## Problem
-Berlin’s education planning requires timely, district-level visibility into where school capacity is insufficient, where construction delays create risk, and whether inclusive education obligations are being met. This project addresses that need through an end-to-end analytical system.
+## What This Project Does
 
-## Objectives
-- Measure demand-supply gaps by district and school type
-- Track project delivery timing and planning slippage
-- Evaluate special-needs inclusion coverage
-- Identify temporary-site dependency and financial risk
-- Provide a dashboard for public-sector decision support
+The system answers five practical planning questions:
+- Where is student demand outpacing planned capacity?
+- Which projects are likely to deliver too late to reduce pressure?
+- Where does special-needs provision remain under-covered?
+- Which districts depend heavily on temporary sites?
+- How reliable are the underlying data and transformations?
 
-## Tech Stack
-- **DuckDB** for analytical storage and local SQL execution
-- **dbt** for transformations, tests, snapshots, and modular modeling
-- **Python** for data ingestion, enrichment, and analysis
-- **Airflow** for orchestration and pipeline scheduling
-- **Metabase** for dashboarding and stakeholder reporting
-- **GitHub Codespaces** as the development environment
+The pipeline produces validated KPI marts used by Metabase dashboard pages for executive and district-level decisions.
 
-## Data Sources
-- District-level student demand data
-- School construction and infrastructure planning data
+## Why It Matters
 
-## Methodology
-The project follows a layered analytics architecture:
-- Raw ingestion
-- Staging and standardization
-- Intermediate enrichment
-- Mart-layer reporting
-- Historical snapshots for planning changes
-- Dashboard publication for decision makers
+Public-sector planners need one coherent view of demand, supply, timing, risk, cost, and data quality. When these dimensions are fragmented, decisions can be delayed or misaligned. This project makes trade-offs explicit by combining:
+- equity impact (district and school-type gaps)
+- delivery risk (handover timing and slippage)
+- inclusion obligations (special-needs coverage)
+- financial exposure (high-cost delayed projects and interim dependency)
+- confidence context (data trust and completeness)
 
-## Key Outputs
-- District demand-supply gap analysis
-- Capacity delivery timeline
-- Inclusion coverage metrics
-- Project delay risk ranking
-- Data trust score
-- Interactive public-sector dashboard
+## Stack and How Each Part Is Used
 
-## Public-Sector Relevance
-This project is designed for presentation to a Berlin education stakeholder and supports planning decisions related to capacity, inclusion, budget efficiency, and spatial equity.
+- DuckDB: local analytical warehouse for raw, staging, intermediate, marts, and snapshots.
+- dbt: model orchestration, transformations, tests, and historical snapshotting.
+- Python: ingestion and QA automation scripts.
+- Airflow: scheduled and on-demand orchestration of ingestion plus dbt workflows.
+- Metabase: decision-facing dashboard layer over KPI marts.
 
-## Repository Structure
-See the `docs/` and `dbt/` folders for project documentation and transformation logic.
+## Repository Overview
 
-## Raw Ingestion (DuckDB)
-The script in `src/ingest_raw_duckdb.py` does the following:
-- Reads both source Excel workbooks sheet by sheet
-- Loads each sheet into DuckDB raw tables without destructive cleaning
-- Preserves placeholders such as `k. A.` and German-formatted strings as-is
-- Writes a DuckDB ingestion log table (`raw.raw_ingestion_log`)
-- Exports a CSV ingestion log
-- Generates markdown and JSON validation reports
-- Checks loaded row counts against source workbook row counts
+- src/: ingestion and validation scripts.
+- dbt/: source declarations, transformations, tests, and snapshots.
+- airflow/: orchestration DAG and runtime config.
+- docs/: methodology, data model conventions, and dashboard blueprint.
+- reports/: generated QA and ingestion reports.
 
-Raw tables are created in the `raw` schema with names derived from workbook and sheet names:
-- `raw.raw__<workbook_slug>__<sheet_slug>`
+## Reproduce the Pipeline
 
-### Run
-1. Place both Excel files in `data/raw/`:
-	 - `od-eckdaten-allg-2024.xlsx`
-	 - `schulbaukarte-2025-.xlsx`
-2. Activate `.venv` (not `.airflow-venv`).
-3. From the project root, run:
+### 1. Environment
+
+From repository root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. Place Raw Files
+
+Put both input workbooks in data/raw/:
+- od-eckdaten-allg-2024.xlsx
+- schulbaukarte-2025-.xlsx
+
+### 3. Ingest Raw Data
 
 ```bash
 python src/ingest_raw_duckdb.py \
-	--db-path data/warehouse/berlin_education.duckdb \
-	--output-dir reports
+  --db-path data/warehouse/berlin_education.duckdb \
+  --output-dir reports
 ```
 
-## Operational Runbooks
-
-### Phase 8 Repeat Run (Snapshots + Slippage)
-Run this sequence whenever planning data is refreshed (for example weekly/monthly):
+### 4. Build Transformations and Tests
 
 ```bash
-source .venv/bin/activate
 cd dbt
-dbt build --select staging intermediate
-dbt snapshot --select snp_planning_history
-dbt build --select int_planning_slippage kpi_planning_slippage kpi_planning_slippage_summary
-dbt build --select path:models/marts
+dbt build
 ```
 
-Note: keep snapshot history cumulative. Do not routinely drop snapshot tables during normal runs.
+### 5. Run Historical Snapshot Logic (Optional but Recommended)
 
-## Status
-Capstone thesis in active development.
+```bash
+dbt snapshot --select snp_planning_history
+dbt build --select int_planning_slippage kpi_planning_slippage kpi_planning_slippage_summary
+cd ..
+```
+
+### 6. Run Phase 11 QA Validation
+
+```bash
+python src/validate_analytics_system.py \
+  --db-path data/warehouse/berlin_education.duckdb \
+  --output-json reports/phase11_validation_report.json
+```
+
+Expected result:
+- overall_status = pass
+- all four QA batches pass (metric correctness, model consistency, dashboard integrity, edge cases)
+
+## Run the Pipeline with Airflow
+
+Use the Phase 9 DAG in airflow/dags/berlin_education_pipeline.py.
+
+Typical local flow:
+```bash
+source .airflow-venv/bin/activate
+airflow db migrate
+airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com
+airflow scheduler
+```
+
+In another terminal:
+```bash
+source .airflow-venv/bin/activate
+airflow webserver
+```
+
+Then trigger DAG berlin_education_pipeline in UI (or CLI) with mode simple or full.
+
+## View the Dashboard in Metabase
+
+1. Start Metabase and connect to DuckDB file data/warehouse/berlin_education.duckdb.
+2. Sync metadata.
+3. Build questions from analytics_marts tables.
+4. Follow dashboard design in docs/phase10_metabase_dashboard_blueprint.md.
+
+Core dashboard datasets:
+- analytics_marts.kpi_executive_overview
+- analytics_marts.kpi_district_comparison
+- analytics_marts.kpi_delivery_timeline
+- analytics_marts.kpi_inclusion_coverage
+- analytics_marts.kpi_delay_risk_dashboard
+- analytics_marts.kpi_zugigkeit_scatter
+- analytics_marts.kpi_data_quality_dashboard
+- analytics_marts.kpi_data_trust_score
+
+## Key Artifacts for Reviewers
+
+- Technical methodology: docs/methodology.md
+- Project framing: docs/project_brief.md
+- Dashboard specification: docs/phase10_metabase_dashboard_blueprint.md
+- QA evidence: reports/phase11_validation_report.json
+
+## Current Status
+
+Phases 4 through 11 are implemented and validated. Phase 12 documentation and defense preparation package is included under docs/.

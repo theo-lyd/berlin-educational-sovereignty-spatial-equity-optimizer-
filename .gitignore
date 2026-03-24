@@ -30,4 +30,9 @@ dbt/packages/
 
 # Airflow
 .airflow-venv/
-airflow/
+airflow/logs/
+airflow/plugins/
+airflow/airflow.cfg
+airflow/airflow.db
+airflow/simple_auth_manager_passwords.json.generated
+airflow/dags/__pycache__/

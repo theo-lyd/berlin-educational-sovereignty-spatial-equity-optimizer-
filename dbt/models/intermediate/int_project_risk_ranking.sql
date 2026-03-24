@@ -12,12 +12,24 @@ projects as (
         bezirk_clean,
         schulart_clean,
         baumassnahme,
+        beschreibung,
+        adresse,
+        plz,
+        ort,
         is_temporary_site,
         planned_capacity,
         total_cost_eur,
         handover_year_start,
         handover_year_end,
-        coalesce(trim(berlin_school_number), '') || '|' || coalesce(trim(school_name), '') || '|' || coalesce(trim(baumassnahme), '') as project_key
+        md5(
+            coalesce(trim(berlin_school_number), '') || '|' ||
+            coalesce(trim(school_name), '') || '|' ||
+            coalesce(trim(baumassnahme), '') || '|' ||
+            coalesce(trim(beschreibung), '') || '|' ||
+            coalesce(trim(adresse), '') || '|' ||
+            coalesce(trim(plz), '') || '|' ||
+            coalesce(trim(ort), '')
+        ) as project_key
     from {{ ref('stg_school_construction_projects') }}
 ),
 

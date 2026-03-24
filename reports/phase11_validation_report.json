@@ -1,0 +1,284 @@
+{
+  "generated_at_utc": "2026-03-24T12:18:05.729057+00:00",
+  "db_path": "data/warehouse/berlin_education.duckdb",
+  "overall_status": "pass",
+  "summary": {
+    "total_checks": 16,
+    "passed": 16,
+    "failed": 0,
+    "by_batch": {
+      "11.1": {
+        "passed": 5,
+        "failed": 0
+      },
+      "11.2": {
+        "passed": 5,
+        "failed": 0
+      },
+      "11.3": {
+        "passed": 1,
+        "failed": 0
+      },
+      "11.4": {
+        "passed": 5,
+        "failed": 0
+      }
+    }
+  },
+  "checks": [
+    {
+      "check_id": "11.1.1",
+      "batch": "11.1",
+      "name": "district totals match staging and mart",
+      "status": "pass",
+      "details": {
+        "staging_distinct_districts": 12,
+        "mart_district_rows": 12
+      }
+    },
+    {
+      "check_id": "11.1.2",
+      "batch": "11.1",
+      "name": "student totals match across staging, intermediate, and marts",
+      "status": "pass",
+      "details": {
+        "staging_students": 404019,
+        "intermediate_students": 404019,
+        "mart_students": 404019,
+        "executive_students": 404019
+      }
+    },
+    {
+      "check_id": "11.1.3",
+      "batch": "11.1",
+      "name": "project totals match across staging, intermediate, and marts",
+      "status": "pass",
+      "details": {
+        "staging_projects": 511,
+        "intermediate_projects": 511,
+        "mart_projects": 511,
+        "delay_dashboard_projects": 511
+      }
+    },
+    {
+      "check_id": "11.1.4",
+      "batch": "11.1",
+      "name": "capacity totals match across staging, intermediate, and marts",
+      "status": "pass",
+      "details": {
+        "staging_capacity": 71900,
+        "intermediate_capacity": 71900,
+        "mart_capacity": 71900,
+        "executive_capacity": 71900
+      }
+    },
+    {
+      "check_id": "11.1.5",
+      "batch": "11.1",
+      "name": "cost conversions are valid and non-negative",
+      "status": "pass",
+      "details": {
+        "numeric_raw_cost_rows": 510,
+        "numeric_raw_but_null_parsed": 0,
+        "negative_parsed_cost_rows": 0
+      }
+    },
+    {
+      "check_id": "11.2.1",
+      "batch": "11.2",
+      "name": "gap totals are consistent across intermediate and mart layers",
+      "status": "pass",
+      "details": {
+        "intermediate_gap": 332119,
+        "mart_gap": 332119,
+        "executive_gap": 332119
+      }
+    },
+    {
+      "check_id": "11.2.2",
+      "batch": "11.2",
+      "name": "inclusion metrics are consistent from intermediate to mart",
+      "status": "pass",
+      "details": {
+        "int_special_needs_demand": 9027,
+        "mart_special_needs_demand": 9027,
+        "int_special_needs_capacity": 1516,
+        "mart_special_needs_capacity": 1516
+      }
+    },
+    {
+      "check_id": "11.2.3",
+      "batch": "11.2",
+      "name": "delivery timeline metrics are consistent from intermediate to mart",
+      "status": "pass",
+      "details": {
+        "int_rows": 16,
+        "mart_rows": 16,
+        "int_capacity_total": 71900,
+        "mart_capacity_total": 71900
+      }
+    },
+    {
+      "check_id": "11.2.4",
+      "batch": "11.2",
+      "name": "risk ranking has valid dense-rank coverage and explicit duplicate-key accounting",
+      "status": "pass",
+      "details": {
+        "total_rows": 511,
+        "distinct_project_keys": 510,
+        "duplicate_project_key_groups": 1,
+        "distinct_project_ranks": 293,
+        "null_project_risk_rank_rows": 0,
+        "min_project_risk_rank": 1
+      }
+    },
+    {
+      "check_id": "11.2.5",
+      "batch": "11.2",
+      "name": "planning slippage mart mirrors intermediate rows",
+      "status": "pass",
+      "details": {
+        "int_slippage_rows": 515,
+        "kpi_slippage_rows": 515
+      }
+    },
+    {
+      "check_id": "11.3.1",
+      "batch": "11.3",
+      "name": "every dashboard page maps to a dbt mart model and fields exist",
+      "status": "pass",
+      "details": {
+        "Executive Overview": {
+          "model": "kpi_executive_overview",
+          "table_exists": true,
+          "missing_required_fields": [],
+          "missing_filter_fields": [],
+          "filter_probe_counts": {},
+          "filter_queries_ok": true,
+          "passed": true
+        },
+        "District Comparison": {
+          "model": "kpi_district_comparison",
+          "table_exists": true,
+          "missing_required_fields": [],
+          "missing_filter_fields": [],
+          "filter_probe_counts": {
+            "bezirk_clean": 71,
+            "schulart_clean": 71
+          },
+          "filter_queries_ok": true,
+          "passed": true
+        },
+        "Delivery Timeline": {
+          "model": "kpi_delivery_timeline",
+          "table_exists": true,
+          "missing_required_fields": [],
+          "missing_filter_fields": [],
+          "filter_probe_counts": {
+            "delivery_year": 16
+          },
+          "filter_queries_ok": true,
+          "passed": true
+        },
+        "Inclusion Coverage": {
+          "model": "kpi_inclusion_coverage",
+          "table_exists": true,
+          "missing_required_fields": [],
+          "missing_filter_fields": [],
+          "filter_probe_counts": {
+            "bezirk_clean": 12
+          },
+          "filter_queries_ok": true,
+          "passed": true
+        },
+        "Financial and Interim Risk": {
+          "model": "kpi_delay_risk_dashboard",
+          "table_exists": true,
+          "missing_required_fields": [],
+          "missing_filter_fields": [],
+          "filter_probe_counts": {
+            "bezirk_clean": 511,
+            "project_risk_bucket": 511,
+            "delayed_handover_flag": 511
+          },
+          "filter_queries_ok": true,
+          "passed": true
+        },
+        "Zugigkeit vs Demand": {
+          "model": "kpi_zugigkeit_scatter",
+          "table_exists": true,
+          "missing_required_fields": [],
+          "missing_filter_fields": [],
+          "filter_probe_counts": {
+            "bezirk_clean": 71,
+            "schulart_clean": 71
+          },
+          "filter_queries_ok": true,
+          "passed": true
+        },
+        "Data Trust and Audit": {
+          "model": "kpi_data_quality_dashboard",
+          "table_exists": true,
+          "missing_required_fields": [],
+          "missing_filter_fields": [],
+          "filter_probe_counts": {
+            "model_name": 2
+          },
+          "filter_queries_ok": true,
+          "passed": true
+        }
+      }
+    },
+    {
+      "check_id": "11.4.1",
+      "batch": "11.4",
+      "name": "missing handover dates are preserved through risk dashboard",
+      "status": "pass",
+      "details": {
+        "missing_handover_dates_staging": 2,
+        "missing_handover_dates_risk_dashboard": 2
+      }
+    },
+    {
+      "check_id": "11.4.2",
+      "batch": "11.4",
+      "name": "missing costs are preserved through risk dashboard",
+      "status": "pass",
+      "details": {
+        "missing_cost_staging": 1,
+        "missing_cost_risk_dashboard": 1
+      }
+    },
+    {
+      "check_id": "11.4.3",
+      "batch": "11.4",
+      "name": "unknown districts are isolated in staging and excluded from district marts",
+      "status": "pass",
+      "details": {
+        "unknown_district_rows_staging": 0,
+        "null_district_rows_district_summary": 0
+      }
+    },
+    {
+      "check_id": "11.4.4",
+      "batch": "11.4",
+      "name": "special-needs demand is preserved in inclusion mart",
+      "status": "pass",
+      "details": {
+        "special_needs_students_staging": 9027,
+        "special_needs_students_inclusion_mart": 9027
+      }
+    },
+    {
+      "check_id": "11.4.5",
+      "batch": "11.4",
+      "name": "zero-capacity edge case is preserved and division safety is enforced",
+      "status": "pass",
+      "details": {
+        "zero_capacity_rows_staging": 268,
+        "zero_capacity_rows_risk_dashboard": 268,
+        "invalid_pressure_ratio_rows": 0
+      }
+    }
+  ]
+}
